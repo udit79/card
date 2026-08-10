@@ -50,7 +50,7 @@ export default function Home() {
                 }}
                 onRenderComplete={setFinalImageUrl}
               />
-              <ShareActions finalImageUrl={finalImageUrl} />
+              <ShareActions finalImageUrl={finalImageUrl} formData={formData} />
             </div>
           </div>
         )}

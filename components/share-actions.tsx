@@ -1,11 +1,13 @@
 "use client";
 
 import { Download, Share2, Link } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import type { BuilderFormData } from "@/lib/types";
 
-export default function ShareActions({ finalImageUrl }: { finalImageUrl: string | null }) {
+export default function ShareActions({ finalImageUrl, formData }: { finalImageUrl: string | null; formData: BuilderFormData }) {
   const [isSharing, setIsSharing] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
+  const shareStartedRef = useRef(false);
 
   const createShareLink = async () => {
     if (!finalImageUrl) throw new Error("No generated image is ready");
@@ -30,22 +32,31 @@ export default function ShareActions({ finalImageUrl }: { finalImageUrl: string 
   };
 
   const handleShareToX = async () => {
-    if (!finalImageUrl) return;
+    if (!finalImageUrl || shareStartedRef.current) return;
+    shareStartedRef.current = true;
     setIsSharing(true);
-    const popup = window.open('about:blank', '_blank', 'noopener,noreferrer');
     try {
       const url = await createShareLink();
       if (url) {
-        const text = encodeURIComponent("I just made my HH Goa 2026 Builder ID ✨\nBuilding, shipping, and showing up in Goa.\n#FrameInGoa\n\n");
+        const frameEmoji = formData.frame === "COASTAL CIRCUIT" ? "🌊" : formData.frame === "ON-CHAIN" ? "⛓️" : "📡";
+        const text = encodeURIComponent(
+          `My HH Goa 2026 Builder ID is locked in. ${frameEmoji}\n\n${formData.title || "Builder"} · ${formData.frame}\n\nBuilding weird things, shipping fast, and bringing them to Goa. ⚡\n\nYou can have yours too: https://builderid.vercel.app/\n\n#FrameInGoa`,
+        );
         const shareUrl = `https://x.com/intent/post?text=${text}&url=${encodeURIComponent(url)}`;
-        if (popup && !popup.closed) popup.location.href = shareUrl;
-        else window.location.href = shareUrl;
+        // Use one anchor activation so only one X tab is opened.
+        const anchor = document.createElement("a");
+        anchor.href = shareUrl;
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
       }
     } catch (e) {
-      popup?.close();
       console.error(e);
       alert(e instanceof Error ? e.message : 'Failed to prepare share link.');
     } finally {
+      shareStartedRef.current = false;
       setIsSharing(false);
     }
   };
