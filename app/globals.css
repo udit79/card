@@ -1,26 +1,75 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-brand-primary: #0b6839;
+  --color-brand-accent: #fee101;
+  --color-brand-pink: #ff0080;
+  --color-brand-offwhite: #fffbe8;
+  --color-brand-muted: #cccccc;
+  --color-brand-white: #ffffff;
+  --color-brand-black: #000000;
+  
+  --font-display: var(--font-imbue);
+  --font-mono: var(--font-victor-mono);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* Base resets & theme application */
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --brand-primary: #0b6839;
+    --brand-accent: #fee101;
+    --brand-pink: #ff0080;
+    --brand-offwhite: #fffbe8;
+    --brand-white: #ffffff;
+    --brand-black: #000000;
+    --brand-muted: #cccccc;
+  }
+  
+  body {
+    background-color: var(--brand-primary);
+    color: var(--brand-white);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom shadow utilities matching the brand reference */
+@layer utilities {
+  .shadow-brutalist {
+    box-shadow: 4px 4px 0 var(--brand-accent);
+  }
+  
+  .shadow-offset {
+    box-shadow: 4px 5px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  .shadow-deep-offset {
+    box-shadow: 0 12px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  @keyframes hh-loader-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes hh-stamp-in {
+    0% { opacity: 0; transform: rotate(-18deg) scale(2.2); filter: blur(2px); }
+    55% { opacity: 1; transform: rotate(-5deg) scale(0.94); filter: blur(0); }
+    72% { transform: rotate(-8deg) scale(1.04); }
+    100% { opacity: 1; transform: rotate(-7deg) scale(1); }
+  }
+
+  .hh-loader-ring {
+    width: 58px;
+    height: 58px;
+    border: 6px solid var(--brand-accent);
+    border-right-color: var(--brand-pink);
+    border-radius: 50%;
+    animation: hh-loader-spin 0.9s steps(8, end) infinite;
+  }
+
+  .hh-stamp {
+    animation: hh-stamp-in 1.15s cubic-bezier(.2,.8,.2,1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hh-loader-ring, .hh-stamp { animation: none; }
+  }
 }
