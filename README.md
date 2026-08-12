@@ -43,6 +43,7 @@ npm run dev
 ```
 
 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
+5. View live web here (https://builderid.vercel.app/) 
 
 ## Tech Stack
 
